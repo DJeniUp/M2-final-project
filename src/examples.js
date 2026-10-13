@@ -21,15 +21,15 @@
  * objects) so that run.toString() gives nicely indented source for display.
  */
 
-function runFactorial(tracer, n) {
-  let factorial = function (n) {
-    if (n <= 1) {
-      return 1;
+function runSum(tracer, n) {
+  let sum = function (n) {
+    if (n === 0) {
+      return 0;
     }
-    return n * factorial(n - 1);
+    return n + sum(n - 1);
   };
-  factorial = tracer.trace(factorial, 'factorial');
-  return factorial(n);
+  sum = tracer.trace(sum, 'sum');
+  return sum(n);
 }
 
 function runFib(tracer, n) {
@@ -79,12 +79,12 @@ function runPermutations(tracer, n) {
 
 export const examples = [
   {
-    id: 'factorial',
-    title: 'factorial(n)',
-    description: 'Linear recursion: each call makes exactly one recursive call, so the tree is a single line and the stack grows to n frames.',
+    id: 'sum',
+    title: 'sum(n)',
+    description: 'Linear recursion: each call makes exactly one recursive call, so the tree is a single line and the stack grows to n + 1 frames.',
     defaultInput: 5,
-    maxInput: 8,
-    run: runFactorial,
+    maxInput: 15,
+    run: runSum,
   },
   {
     id: 'fib',
