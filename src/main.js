@@ -270,9 +270,10 @@ function renderDepthRow(row) {
   }
 
   const tr = document.createElement('tr');
+  // Calls come first: they are the numbers the question at the top asks about.
   tr.append(
-    tableCell(row.label, ''),
     tableCell(calls, numberClass),
+    tableCell(row.label, ''),
     tableCell(maxDepth, numberClass),
     tableCell(row.result, resultClass),
   );

@@ -107,7 +107,8 @@ main {
   text-align: right;
 }
 
-.depth-panel td:first-child {
+.depth-panel th:nth-child(2),
+.depth-panel td:nth-child(2) {
   text-align: left;
 }
 

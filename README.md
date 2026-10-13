@@ -1,7 +1,10 @@
 # Recursion: width costs time, depth costs stack
 
-> fib(30) makes about 2.7 million calls and runs fine. sum(100000) makes only
-> 100,000 calls and crashes with "Maximum call stack size exceeded". Why?
+> One recursive function makes 2.7 million calls and finishes in milliseconds.
+> Another makes only 100,000 calls and crashes. Why does the smaller one crash?
+>
+> (The first is fib(30); the second is sum(100000), which fails with
+> "Maximum call stack size exceeded".)
 
 **Live demo:** https://djeniup.github.io/M2-final-project/
 

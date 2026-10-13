@@ -9,9 +9,9 @@
 <body>
   <header>
     <h1>
-      fib(30) makes about 2.7 million calls and runs fine.
-      sum(100000) makes only 100,000 calls and crashes with
-      “Maximum call stack size exceeded”. Why?
+      One recursive function makes 2.7 million calls and finishes in
+      milliseconds. Another makes only 100,000 calls and crashes. Why does
+      the smaller one crash?
     </h1>
     <p class="insight">
       The call stack at any moment is exactly the path from the root of the
@@ -25,7 +25,7 @@
     <button id="depth-run">Run the experiment</button>
     <table id="depth-table" hidden>
       <thead>
-        <tr><th></th><th>calls</th><th>max depth</th><th>result</th></tr>
+        <tr><th>calls</th><th>function</th><th>max depth</th><th>result</th></tr>
       </thead>
       <tbody id="depth-rows"></tbody>
     </table>
