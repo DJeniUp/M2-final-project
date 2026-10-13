@@ -21,7 +21,8 @@ body {
 
 h1 {
   margin: 0 0 4px;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
+  line-height: 1.35;
 }
 
 h2 {
@@ -85,6 +86,44 @@ main {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px;
+}
+
+/* ---------- Width vs depth ---------- */
+
+.depth-panel {
+  margin-bottom: 16px;
+}
+
+.depth-panel table {
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-family: ui-monospace, monospace;
+}
+
+.depth-panel th,
+.depth-panel td {
+  padding: 4px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+}
+
+.depth-panel td:first-child {
+  text-align: left;
+}
+
+/* Values the crashing run would have needed but never reached. */
+.depth-panel td.needed {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.depth-panel td.crashed {
+  color: var(--last);
+}
+
+.footnote {
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 /* ---------- Call tree (SVG) ---------- */

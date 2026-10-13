@@ -8,12 +8,33 @@
 </head>
 <body>
   <header>
-    <h1>Recursion: the call tree and the call stack</h1>
+    <h1>
+      fib(30) makes about 2.7 million calls and runs fine.
+      sum(100000) makes only 100,000 calls and crashes with
+      “Maximum call stack size exceeded”. Why?
+    </h1>
     <p class="insight">
       The call stack at any moment is exactly the path from the root of the
-      call tree to the call that is running now (highlighted).
+      call tree to the call that is running now (highlighted below).
+      Width costs time, depth costs stack.
     </p>
   </header>
+
+  <section class="panel depth-panel">
+    <h2>Width vs depth</h2>
+    <button id="depth-run">Run the experiment</button>
+    <table id="depth-table" hidden>
+      <thead>
+        <tr><th></th><th>calls</th><th>max depth</th><th>result</th></tr>
+      </thead>
+      <tbody id="depth-rows"></tbody>
+    </table>
+    <p id="depth-footnote" class="footnote" hidden>
+      * Required, not measured: the recursive sum crashes before getting
+      there, because all n + 1 of its calls must be on the stack at once.
+    </p>
+    <p id="stack-limit"></p>
+  </section>
 
   <section class="controls">
     <label>Example

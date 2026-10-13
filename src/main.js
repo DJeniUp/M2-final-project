@@ -6,6 +6,8 @@ import { stateAt } from './replay.js';
 import { layout } from './layout.js';
 import { renderTree } from './renderTree.js';
 import { renderStack } from './renderStack.js';
+import { countFibCalls, recursiveSum, probeStackLimit } from './depth.js';
+import { sumExplicit } from './explicit.js';
 
 const ui = {
   exampleSelect: document.getElementById('example'),
@@ -24,6 +26,11 @@ const ui = {
   tree: document.getElementById('tree'),
   stack: document.getElementById('stack'),
   source: document.getElementById('source'),
+  depthRun: document.getElementById('depth-run'),
+  depthTable: document.getElementById('depth-table'),
+  depthRows: document.getElementById('depth-rows'),
+  depthFootnote: document.getElementById('depth-footnote'),
+  stackLimit: document.getElementById('stack-limit'),
 };
 
 // Everything about the current run. Layout is computed once per run
@@ -201,6 +208,77 @@ function onKeyDown(event) {
   }
 }
 
+// ---------- Width vs depth panel ----------
+
+const BIG_N = 100000;
+
+function formatNumber(value) {
+  return value.toLocaleString('en-US');
+}
+
+// sum is linear, so it needs n + 1 calls, all on the stack at once.
+// If it crashes, those numbers were required but never reached.
+function measureRecursiveSum(n) {
+  const row = { label: `sum(${formatNumber(n)}) recursive`, calls: n + 1, maxDepth: n + 1 };
+  try {
+    row.result = formatNumber(recursiveSum(n));
+  } catch (error) {
+    if (!(error instanceof RangeError)) {
+      throw error;
+    }
+    row.result = `${error.name}: ${error.message}`;
+    row.crashed = true;
+  }
+  return row;
+}
+
+function runDepthExperiment() {
+  const fib = countFibCalls(30);
+  const rows = [
+    { label: 'fib(30) recursive', calls: fib.calls, maxDepth: fib.maxDepth, result: formatNumber(fib.result) },
+    measureRecursiveSum(BIG_N),
+    // It finished, so all n + 1 calls really happened, just on the heap.
+    { label: `sum(${formatNumber(BIG_N)}) explicit stack`, calls: BIG_N + 1, maxDepth: BIG_N + 1, result: formatNumber(sumExplicit(BIG_N)) },
+  ];
+
+  ui.depthRows.replaceChildren();
+  for (const row of rows) {
+    ui.depthRows.append(renderDepthRow(row));
+  }
+  ui.depthTable.hidden = false;
+  ui.depthFootnote.hidden = !rows.some((row) => row.crashed);
+  ui.stackLimit.textContent = `This browser's stack limit: about ${formatNumber(probeStackLimit())} frames.`;
+}
+
+function tableCell(text, className) {
+  const td = document.createElement('td');
+  td.textContent = text;
+  td.className = className;
+  return td;
+}
+
+function renderDepthRow(row) {
+  let calls = formatNumber(row.calls);
+  let maxDepth = formatNumber(row.maxDepth);
+  let numberClass = '';
+  let resultClass = '';
+  if (row.crashed) {
+    calls += ' needed*';
+    maxDepth += ' needed*';
+    numberClass = 'needed';
+    resultClass = 'crashed';
+  }
+
+  const tr = document.createElement('tr');
+  tr.append(
+    tableCell(row.label, ''),
+    tableCell(calls, numberClass),
+    tableCell(maxDepth, numberClass),
+    tableCell(row.result, resultClass),
+  );
+  return tr;
+}
+
 function setup() {
   for (const example of examples) {
     const option = document.createElement('option');
@@ -211,6 +289,8 @@ function setup() {
 
   ui.exampleSelect.addEventListener('change', onExampleChange);
   ui.runButton.addEventListener('click', runExample);
+  // Only on click: it takes a moment and deliberately overflows the stack.
+  ui.depthRun.addEventListener('click', runDepthExperiment);
   ui.input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       runExample();
