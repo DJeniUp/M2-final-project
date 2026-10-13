@@ -4,7 +4,7 @@ An interactive demo that shows one recursive execution in two synchronized views
 a **call tree** that grows branch by branch, and the **call stack** with frames
 being pushed and popped.
 
-**Live demo:** https://YOUR-USERNAME.github.io/m2-final-project/ *(placeholder)*
+**Live demo:** https://djeniup.github.io/M2-final-project/
 
 ## The core insight
 
