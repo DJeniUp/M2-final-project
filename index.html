@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recursion: call tree and call stack</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Recursion: the call tree and the call stack</h1>
+    <p class="insight">
+      The call stack at any moment is exactly the path from the root of the
+      call tree to the call that is running now (highlighted).
+    </p>
+  </header>
+
+  <section class="controls">
+    <label>Example
+      <select id="example"></select>
+    </label>
+    <label>n
+      <input id="input" type="number" min="0">
+    </label>
+    <button id="run">Run</button>
+    <p id="description"></p>
+    <p id="error" class="error"></p>
+  </section>
+
+  <section class="player">
+    <button id="reset" title="Reset">⏮ Reset</button>
+    <button id="back" title="Step back (←)">◀ Back</button>
+    <button id="play" title="Play / pause (space)">▶ Play</button>
+    <button id="forward" title="Step forward (→)">Forward ▶</button>
+    <label>Speed
+      <input id="speed" type="range" min="1" max="20" value="4">
+    </label>
+    <input id="scrubber" type="range" min="0" value="0" aria-label="Step">
+  </section>
+
+  <p id="stats" class="stats"></p>
+  <p id="comparison" class="comparison" hidden></p>
+
+  <main>
+    <section class="panel tree-panel">
+      <h2>Call tree</h2>
+      <div class="tree-scroll">
+        <svg id="tree"></svg>
+      </div>
+      <ul class="legend">
+        <li><span class="swatch current"></span>current (top of stack)</li>
+        <li><span class="swatch active"></span>on the stack</li>
+        <li><span class="swatch done"></span>returned</li>
+        <li><span class="swatch memo"></span>answered from cache</li>
+        <li><span class="swatch last"></span>changed in the last step</li>
+      </ul>
+    </section>
+
+    <section class="panel stack-panel">
+      <h2>Call stack <small>(top first)</small></h2>
+      <ol id="stack" class="stack"></ol>
+    </section>
+  </main>
+
+  <section class="panel">
+    <h2>Source</h2>
+    <pre id="source"></pre>
+  </section>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

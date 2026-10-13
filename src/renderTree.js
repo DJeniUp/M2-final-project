@@ -46,7 +46,7 @@ export function renderTree(svg, fullNodes, positions, state) {
     return { x: position.x * unitX, y: position.y * LEVEL_GAP };
   }
 
-  fitViewBox(svg, fullNodes, toPixels, widest);
+  const origin = fitViewBox(svg, fullNodes, toPixels, widest);
 
   // The stack is exactly the root-to-current path, so the edge into
   // every stack frame (except the root) is part of the highlighted path.
@@ -62,6 +62,24 @@ export function renderTree(svg, fullNodes, positions, state) {
     }
     nodeLayer.append(drawNode(node, toPixels(node.id), state));
   }
+
+  scrollToFocus(svg.parentElement, state, toPixels, origin);
+}
+
+// Big trees are wider than the panel. Keep the node that matters right
+// now (the running call, or the one that just changed) in the middle.
+function scrollToFocus(container, state, toPixels, origin) {
+  const focus = state.current !== null ? state.current : state.last;
+  if (focus === null) {
+    container.scrollLeft = 0;
+    container.scrollTop = 0;
+    return;
+  }
+  // At 1:1 scale, a point's offset inside the SVG is just its distance
+  // from the viewBox's top-left corner.
+  const point = toPixels(focus);
+  container.scrollLeft = point.x - origin.left - container.clientWidth / 2;
+  container.scrollTop = point.y - origin.top - container.clientHeight / 2;
 }
 
 function fitViewBox(svg, fullNodes, toPixels, widest) {
@@ -77,6 +95,11 @@ function fitViewBox(svg, fullNodes, toPixels, widest) {
   const width = maxX + widest + 2 * PADDING;
   const height = maxY + NODE_HEIGHT + 2 * PADDING;
   svg.setAttribute('viewBox', `${left} ${top} ${width} ${height}`);
+  // Draw at 1:1 scale instead of shrinking to fit: text stays readable
+  // and wide trees scroll inside their panel.
+  svg.setAttribute('width', width);
+  svg.setAttribute('height', height);
+  return { left, top };
 }
 
 function drawEdge(from, to, onPath) {

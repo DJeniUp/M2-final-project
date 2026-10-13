@@ -1,0 +1,225 @@
+:root {
+  --ink: #1f2933;
+  --muted: #7b8794;
+  --line: #cbd2d9;
+  --active: #fff3c4;
+  --active-border: #f0b429;
+  --current: #f0b429;
+  --done: #e3f8ff;
+  --done-border: #4098d7;
+  --memo-border: #8662c7;
+  --last: #e12d39;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 16px;
+  font-family: system-ui, sans-serif;
+  color: var(--ink);
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.insight {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+.controls,
+.player {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.controls p {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+#input {
+  width: 4em;
+}
+
+#scrubber {
+  flex: 1;
+  min-width: 200px;
+}
+
+.error {
+  color: var(--last);
+}
+
+.stats {
+  margin: 4px 0;
+  font-family: ui-monospace, monospace;
+}
+
+.comparison {
+  margin: 4px 0 12px;
+  padding: 8px 12px;
+  border-left: 4px solid var(--memo-border);
+  background: #f5f0ff;
+}
+
+main {
+  display: grid;
+  /* minmax(0, ...) lets a wide tree scroll instead of stretching the column. */
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+/* ---------- Call tree (SVG) ---------- */
+
+.tree-scroll {
+  height: 460px;
+  overflow: auto;
+}
+
+#tree {
+  display: block;
+  margin: 0 auto;
+}
+
+.edge {
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+/* The highlighted path from the root to the current call = the stack. */
+.edge.on-path {
+  stroke: var(--current);
+  stroke-width: 4;
+}
+
+.node rect {
+  fill: white;
+  stroke: var(--muted);
+  stroke-width: 1.5;
+}
+
+.node text {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  text-anchor: middle;
+  fill: var(--ink);
+}
+
+.node text.value {
+  font-weight: bold;
+}
+
+.node.active rect {
+  fill: var(--active);
+  stroke: var(--active-border);
+}
+
+.node.current rect {
+  fill: var(--current);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.node.done rect {
+  fill: var(--done);
+  stroke: var(--done-border);
+}
+
+.node.memo rect {
+  fill: white;
+  stroke: var(--memo-border);
+  stroke-dasharray: 5 3;
+}
+
+/* Drawn last so the node that just changed is always visible. */
+.node.last rect {
+  stroke: var(--last);
+  stroke-width: 3;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  vertical-align: middle;
+  border: 1.5px solid var(--muted);
+  border-radius: 3px;
+}
+
+.swatch.current { background: var(--current); border: 3px solid var(--ink); }
+.swatch.active { background: var(--active); border-color: var(--active-border); }
+.swatch.done { background: var(--done); border-color: var(--done-border); }
+.swatch.memo { border: 1.5px dashed var(--memo-border); }
+.swatch.last { border: 3px solid var(--last); }
+
+/* ---------- Call stack (HTML list) ---------- */
+
+.stack {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: ui-monospace, monospace;
+}
+
+.stack li {
+  margin-bottom: 4px;
+  padding: 6px 10px;
+  border: 1.5px solid var(--active-border);
+  border-radius: 4px;
+  background: var(--active);
+}
+
+.stack li.top {
+  background: var(--current);
+  border: 3px solid var(--ink);
+  font-weight: bold;
+}
+
+.stack li.empty {
+  border-style: dashed;
+  border-color: var(--line);
+  background: none;
+  color: var(--muted);
+}
+
+pre {
+  margin: 0;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 800px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
