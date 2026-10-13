@@ -22,7 +22,15 @@
  * @property {Array} args
  * @property {*} value            The cached value that was returned.
  *
- * @typedef {CallEvent | ReturnEvent | MemoHitEvent} TraceEvent
+ * @typedef {Object} ResumeEvent
+ * Only recorded by the explicit-stack versions (see explicit.js).
+ * The tree ignores it; the stack panel uses it to show why a frame paused.
+ * @property {'resume'} type
+ * @property {number} id          Id of the frame that continued.
+ * @property {number} stage       The stage it continues at (its "return address").
+ * @property {Object} locals      Its local variables at that point, e.g. { a: 2 }.
+ *
+ * @typedef {CallEvent | ReturnEvent | MemoHitEvent | ResumeEvent} TraceEvent
  */
 
 // Big enough for every example at its max input, small enough that the
@@ -50,32 +58,50 @@ export function createTracer() {
     return active[active.length - 1];
   }
 
+  // enter/exit are the low-level hooks: trace() uses them for real
+  // recursion, and explicit.js calls them directly for its own frames.
+  // Either way there is only one code path that records calls and returns.
+  function enter(name, args) {
+    const id = nextId++;
+    // Copy the arguments so a later mutation by the function
+    // can't rewrite history in the event log.
+    record({ type: 'call', id, parent: topOfStack(), name, args: structuredClone(args) });
+    active.push(id);
+    return id;
+  }
+
+  function exit(id, value) {
+    active.pop();
+    record({ type: 'return', id, value });
+  }
+
+  function resume(id, stage, locals) {
+    record({ type: 'resume', id, stage, locals: structuredClone(locals) });
+  }
+
   function trace(fn, name, cache) {
     return function traced(...args) {
-      // Copy the arguments so a later mutation by the function
-      // can't rewrite history in the event log.
-      const argsCopy = structuredClone(args);
       const key = String(args);
 
       // Works like a memoize decorator: on a cache hit the original function
       // is never called, so this node is a leaf that never goes on the stack.
       if (cache && cache.has(key)) {
         const value = cache.get(key);
-        record({ type: 'memo-hit', id: nextId++, parent: topOfStack(), name, args: argsCopy, value });
+        record({ type: 'memo-hit', id: nextId++, parent: topOfStack(), name, args: structuredClone(args), value });
         return value;
       }
 
-      const id = nextId++;
-      record({ type: 'call', id, parent: topOfStack(), name, args: argsCopy });
-      active.push(id);
+      const id = enter(name, args);
       let value;
       try {
         value = fn(...args);
-      } finally {
-        // finally runs even if fn throws, so `active` never keeps a dead frame.
+      } catch (error) {
+        // Not `finally`: on success exit() already pops, and popping twice
+        // would remove the caller's frame too. Only a throw skips exit().
         active.pop();
+        throw error;
       }
-      record({ type: 'return', id, value });
+      exit(id, value);
       if (cache) {
         cache.set(key, value);
       }
@@ -89,5 +115,5 @@ export function createTracer() {
     nextId = 0;
   }
 
-  return { trace, events, active, reset };
+  return { trace, enter, exit, resume, events, active, reset };
 }

@@ -57,3 +57,19 @@ test('throws a clear error after MAX_EVENTS', () => {
   assert.equal(tracer.events.length, MAX_EVENTS);
   assert.equal(tracer.active.length, 0);
 });
+
+test('resume events are recorded and count towards MAX_EVENTS', () => {
+  const tracer = createTracer();
+  const id = tracer.enter('fib', [2]);
+  tracer.resume(id, 1, { a: 1 });
+  tracer.exit(id, 1);
+  assert.deepEqual(tracer.events[1], { type: 'resume', id: 0, stage: 1, locals: { a: 1 } });
+  assert.equal(tracer.active.length, 0);
+
+  assert.throws(() => {
+    while (true) {
+      tracer.resume(id, 1, {});
+    }
+  }, /Trace limit reached/);
+  assert.equal(tracer.events.length, MAX_EVENTS);
+});
