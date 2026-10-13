@@ -7,8 +7,11 @@
  * reason about: stepping backwards needs no "undo" logic at all.
  *
  * Returns:
- *   nodes   Map<id, { id, parent, name, args, depth, status, value, children }>
+ *   nodes   Map<id, { id, parent, name, args, depth, status, value, children,
+ *                     stage, locals }>
  *           status is 'active' (on the stack), 'done' (returned) or 'memo'.
+ *           stage/locals come from the latest 'resume' event (explicit-stack
+ *           examples only) and stay undefined otherwise.
  *   stack   ids of frames on the call stack, root first.
  *   current top of the stack (the running call), or null.
  *   last    id of the node touched by event k-1, or null when k is 0.
@@ -30,6 +33,10 @@ export function stateAt(events, k) {
       node.status = 'done';
       node.value = event.value;
       stack.pop();
+    } else if (event.type === 'resume') {
+      const node = nodes.get(event.id);
+      node.stage = event.stage;
+      node.locals = event.locals;
     }
     last = event.id;
   }

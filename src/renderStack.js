@@ -6,7 +6,7 @@ import { formatCall } from './renderTree.js';
  * but people expect to see the top of the stack at the top, so we
  * render it in reverse.
  */
-export function renderStack(listElement, state) {
+export function renderStack(listElement, state, stageLabels) {
   listElement.replaceChildren();
 
   if (state.stack.length === 0) {
@@ -24,7 +24,22 @@ export function renderStack(listElement, state) {
     if (i === state.stack.length - 1) {
       frame.classList.add('top');
     }
-    frame.textContent = formatCall(node);
+    frame.textContent = formatFrame(node, stageLabels);
     listElement.append(frame);
   }
+}
+
+// e.g. "fib(4) · waiting for fib(n-2) · a = 2". Frames without a recorded
+// stage (all recursive examples) just show the call.
+function formatFrame(node, stageLabels) {
+  const parts = [formatCall(node)];
+  if (node.stage !== undefined && stageLabels) {
+    parts.push(stageLabels[node.stage]);
+  }
+  if (node.locals) {
+    for (const [name, value] of Object.entries(node.locals)) {
+      parts.push(`${name} = ${JSON.stringify(value)}`);
+    }
+  }
+  return parts.join(' · ');
 }

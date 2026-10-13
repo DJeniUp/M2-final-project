@@ -76,7 +76,7 @@ h2 {
 main {
   display: grid;
   /* minmax(0, ...) lets a wide tree scroll instead of stretching the column. */
-  grid-template-columns: minmax(0, 1fr) 260px;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: 16px;
   margin-bottom: 16px;
 }

@@ -69,7 +69,8 @@ function runExample() {
   positions = events.length > 0 ? layout(fullNodes, events[0].id) : new Map();
 
   ui.description.textContent = example.description;
-  ui.source.textContent = example.run.toString();
+  const shownCode = example.source || example.run;
+  ui.source.textContent = shownCode.toString();
   ui.scrubber.max = events.length;
   renderComparison(example, n);
   showStep(0);
@@ -79,7 +80,7 @@ function showStep(k) {
   step = Math.max(0, Math.min(k, events.length));
   const state = stateAt(events, step);
   renderTree(ui.tree, fullNodes, positions, state);
-  renderStack(ui.stack, state);
+  renderStack(ui.stack, state, selectedExample().stageLabels);
   renderStats(state);
   ui.scrubber.value = step;
 }

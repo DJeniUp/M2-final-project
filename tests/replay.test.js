@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createTracer } from '../src/tracer.js';
 import { stateAt } from '../src/replay.js';
+import { fibExplicit } from '../src/explicit.js';
 
 function traceFib(n) {
   const tracer = createTracer();
@@ -49,4 +50,14 @@ test('last is the node touched by the previous event', () => {
   for (let k = 1; k <= events.length; k++) {
     assert.equal(stateAt(events, k).last, events[k - 1].id);
   }
+});
+
+test('resume events set stage and locals on the node', () => {
+  const tracer = createTracer();
+  fibExplicit(2, tracer);
+  // Events: call 0, resume 0 stage 1, call 1, return 1, resume 0 stage 2 {a: 1}, ...
+  const { nodes } = stateAt(tracer.events, 5);
+  assert.equal(nodes.get(0).stage, 2);
+  assert.deepEqual(nodes.get(0).locals, { a: 1 });
+  assert.equal(nodes.get(1).stage, undefined);
 });

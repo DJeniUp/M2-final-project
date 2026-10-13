@@ -19,7 +19,10 @@
  *
  * The run functions are declared at the top level (not inline in the
  * objects) so that run.toString() gives nicely indented source for display.
+ * Explicit-stack examples set `source` to show the stack machine instead
+ * of their one-line run function.
  */
+import { sumExplicit, fibExplicit } from './explicit.js';
 
 function runSum(tracer, n) {
   let sum = function (n) {
@@ -77,6 +80,14 @@ function runPermutations(tracer, n) {
   return permute([], items);
 }
 
+function runSumExplicit(tracer, n) {
+  return sumExplicit(n, tracer);
+}
+
+function runFibExplicit(tracer, n) {
+  return fibExplicit(n, tracer);
+}
+
 export const examples = [
   {
     id: 'sum',
@@ -85,6 +96,16 @@ export const examples = [
     defaultInput: 5,
     maxInput: 15,
     run: runSum,
+  },
+  {
+    id: 'sum-explicit',
+    title: 'sum(n), explicit stack',
+    description: 'The same sum without recursion: frames live in an ordinary array. Each frame remembers its stage, which plays the role of the return address.',
+    defaultInput: 5,
+    maxInput: 15,
+    run: runSumExplicit,
+    source: sumExplicit,
+    stageLabels: ['start', 'waiting for sum(n-1)'],
   },
   {
     id: 'fib',
@@ -101,6 +122,16 @@ export const examples = [
     defaultInput: 6,
     maxInput: 10,
     run: runFibMemo,
+  },
+  {
+    id: 'fib-explicit',
+    title: 'fib(n), explicit stack',
+    description: 'The same fib without recursion. The frame saves fib(n-1) in a local a while it waits for fib(n-2), just like a real stack frame.',
+    defaultInput: 6,
+    maxInput: 10,
+    run: runFibExplicit,
+    source: fibExplicit,
+    stageLabels: ['start', 'waiting for fib(n-1)', 'waiting for fib(n-2)'],
   },
   {
     id: 'permutations',
