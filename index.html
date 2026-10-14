@@ -20,20 +20,10 @@
     </p>
   </header>
 
-  <section class="panel depth-panel">
-    <h2>Width vs depth</h2>
-    <button id="depth-run">Run the experiment</button>
-    <table id="depth-table" hidden>
-      <thead>
-        <tr><th>calls</th><th>function</th><th>max depth</th><th>result</th></tr>
-      </thead>
-      <tbody id="depth-rows"></tbody>
-    </table>
-    <p id="depth-footnote" class="footnote" hidden>
-      * Required, not measured: the recursive sum crashes before getting
-      there, because all n + 1 of its calls must be on the stack at once.
-    </p>
-    <p id="stack-limit"></p>
+  <section class="question">
+    <button id="run-all">Run all</button>
+    <div id="question-cards" class="card-row"></div>
+    <div id="fix-card"></div>
   </section>
 
   <section class="controls">

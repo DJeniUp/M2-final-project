@@ -88,43 +88,50 @@ main {
   padding: 12px;
 }
 
-/* ---------- Width vs depth ---------- */
+/* ---------- Code cards for the question ---------- */
 
-.depth-panel {
-  margin-bottom: 16px;
+.question {
+  margin-bottom: 24px;
 }
 
-.depth-panel table {
-  margin-top: 8px;
-  border-collapse: collapse;
+.card-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  margin: 8px 0 16px;
+}
+
+.card pre {
+  margin-bottom: 8px;
+  padding: 8px;
+  background: #f5f7fa;
+  border-radius: 4px;
+}
+
+.card input {
+  width: 7em;
+  margin-right: 8px;
+}
+
+.card-output {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 12px;
+  margin: 8px 0 0;
   font-family: ui-monospace, monospace;
 }
 
-.depth-panel th,
-.depth-panel td {
-  padding: 4px 12px;
-  border-bottom: 1px solid var(--line);
-  text-align: right;
-}
-
-.depth-panel th:nth-child(2),
-.depth-panel td:nth-child(2) {
-  text-align: left;
-}
-
-/* Values the crashing run would have needed but never reached. */
-.depth-panel td.needed {
+.card-output dt {
   color: var(--muted);
-  font-style: italic;
 }
 
-.depth-panel td.crashed {
+.card-output dd {
+  margin: 0;
+}
+
+.card-output dd.crashed {
   color: var(--last);
-}
-
-.footnote {
-  color: var(--muted);
-  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 /* ---------- Call tree (SVG) ---------- */
@@ -259,7 +266,8 @@ pre {
 }
 
 @media (max-width: 800px) {
-  main {
+  main,
+  .card-row {
     grid-template-columns: 1fr;
   }
 }
