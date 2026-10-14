@@ -43,15 +43,17 @@ function addRow(list, term, value, className) {
   list.append(dt, dd);
 }
 
-// For a crash, calls and max depth show how far it got before the engine
-// stopped it, and the error message takes the place of the result.
+// After a crash the numbers only show how far it got before the engine
+// stopped it, so they get different labels, and the error replaces the result.
 export function showOutcome(output, outcome) {
   output.replaceChildren();
-  addRow(output, 'calls', formatNumber(outcome.calls), '');
-  addRow(output, 'max depth', formatNumber(outcome.maxDepth), '');
   if (outcome.error) {
+    addRow(output, 'calls before crash', formatNumber(outcome.calls), '');
+    addRow(output, 'depth at crash', formatNumber(outcome.maxDepth), '');
     addRow(output, 'error', outcome.error, 'crashed');
   } else {
+    addRow(output, 'calls', formatNumber(outcome.calls), '');
+    addRow(output, 'max depth', formatNumber(outcome.maxDepth), '');
     addRow(output, 'result', formatNumber(outcome.result), '');
   }
 }

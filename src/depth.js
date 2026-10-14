@@ -10,10 +10,10 @@ import { sumExplicit } from './explicit.js';
  * tracer. Same pattern as the tracer: `let f = ...; f = counter.wrap(f);`
  * so the source shown in the cards contains no counting code.
  *
- * Note: the wrapper is itself a function, so every counted call uses two
- * JS frames (wrapper + original). A counted function therefore hits the
- * engine's stack limit at roughly half the depth it would reach without
- * counting. That doesn't change the lesson: depth is what crashes.
+ * Note: the stack limit is a fixed amount of memory, not a number of
+ * frames. The wrapper's frame also takes space, so fewer calls fit before
+ * the crash than without counting. That doesn't change the lesson: depth
+ * is what crashes.
  */
 export function createCounter() {
   let calls = 0;

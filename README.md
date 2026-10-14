@@ -1,7 +1,7 @@
 # Recursion: width costs time, depth costs stack
 
 > One recursive function makes 2.7 million calls and finishes in milliseconds.
-> Another makes only 100,000 calls and crashes. Why does the smaller one crash?
+> Another needs only 100,000 calls and crashes. Why does the smaller one crash?
 >
 > (The first is fib(30); the second is sum(100000), which fails with
 > "Maximum call stack size exceeded".)
@@ -50,8 +50,9 @@ does not work on Node 22, because Node treats the folder as a file to run.)
 
 - **Code cards:** set `n` and press **Run** on a card (or Enter), or **Run all**.
   Nothing runs on page load, because fib(30) takes a moment and sum is meant to
-  crash. The counter adds one extra JS frame per call, so a counted sum crashes
-  at roughly half the depth an uncounted one would.
+  crash. The stack limit is a fixed amount of memory, not a number of frames;
+  the counter's wrapper frame also takes space, so fewer calls fit before the
+  crash than without counting.
 - Choose an example and `n`, then press **Run** (or Enter).
 - **Back / Forward** step one event; **Play** steps automatically at the chosen speed.
 - The long slider jumps to any step. **Reset** goes back to step 0.
