@@ -12,9 +12,11 @@
  * With a tracer, every push, pop and stage change is recorded with the
  * same ids and order as the recursive versions in examples.js.
  * With tracer = null nothing is recorded, so huge n is fine.
+ * An optional `stats` object ({ calls: 0, maxDepth: 0 }) is filled in
+ * without a tracer; the "explicit stack" card uses it.
  */
 
-function createMachine(name, tracer) {
+function createMachine(name, tracer, stats) {
   // frames and ret are read as m.frames / m.ret. Never destructure them:
   // finish() reassigns m.ret, and a destructured copy would never update.
   const m = { frames: [], ret: undefined };
@@ -22,6 +24,11 @@ function createMachine(name, tracer) {
   m.push = function (n) {
     const id = tracer ? tracer.enter(name, [n]) : null;
     m.frames.push({ id, n, stage: 0, a: undefined });
+    if (stats) {
+      // Every push is one call, and frames.length is the current depth.
+      stats.calls += 1;
+      stats.maxDepth = Math.max(stats.maxDepth, m.frames.length);
+    }
   };
 
   m.top = function () {
@@ -48,8 +55,8 @@ function createMachine(name, tracer) {
 }
 
 // sum(n) = n === 0 ? 0 : n + sum(n - 1)
-export function sumExplicit(n, tracer = null) {
-  const m = createMachine('sum', tracer);
+export function sumExplicit(n, tracer = null, stats = null) {
+  const m = createMachine('sum', tracer, stats);
   m.push(n);
   while (m.frames.length > 0) {
     const frame = m.top();
@@ -69,8 +76,8 @@ export function sumExplicit(n, tracer = null) {
 }
 
 // fib(n) = n < 2 ? n : fib(n - 1) + fib(n - 2)
-export function fibExplicit(n, tracer = null) {
-  const m = createMachine('fib', tracer);
+export function fibExplicit(n, tracer = null, stats = null) {
+  const m = createMachine('fib', tracer, stats);
   m.push(n);
   while (m.frames.length > 0) {
     const frame = m.top();
