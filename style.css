@@ -1,22 +1,22 @@
+/* ---------- Tokens: the course's "wire" design ---------- */
+
 :root {
-  --ink: #1f2933;
-  --muted: #7b8794;
-  --line: #cbd2d9;
-  --active: #fff3c4;
-  --active-border: #f0b429;
-  --current: #f0b429;
-  --done: #e3f8ff;
-  --done-border: #4098d7;
-  --memo-border: #8662c7;
-  --last: #e12d39;
+  --bg: #060b17; --bg2: #0b1426; --line: #1f3052; --ink: #e3ecff; --ink-2: #cfdcf7; --muted: #8599c2;
+  --act: #3ee6ff; --lime: #b6ff3b; --amber: #ffb547; --bad: #ff5c7a;
+  --sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
 }
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0 auto;
   max-width: 1200px;
-  padding: 0 16px;
-  font-family: system-ui, sans-serif;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  background: var(--bg);
   color: var(--ink);
+  font: 400 1.05rem/1.55 var(--sans);
 }
 
 /* ---------- Slides ---------- */
@@ -27,9 +27,7 @@ body {
  * so wheel, PageUp/PageDown and clickers move exactly one slide.
  * scroll-snap-align: start makes each slide's top edge a snap point.
  */
-html {
-  scroll-snap-type: y mandatory;
-}
+html { scroll-snap-type: y mandatory; }
 
 /*
  * 100dvh, not 100vh: on mobile browsers 100vh is the height with the
@@ -39,7 +37,6 @@ html {
  */
 .slide {
   position: relative;
-  box-sizing: border-box;
   height: 100vh;
   height: 100dvh;
   padding: 24px 0 36px;
@@ -58,43 +55,181 @@ html {
   position: absolute;
   right: 0;
   bottom: 10px;
-  font-size: 0.85rem;
+  font: 500 0.85rem var(--mono);
   color: var(--muted);
 }
 
-.title {
-  margin: 0 auto;
-  max-width: 20em;
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  line-height: 1.3;
-  text-align: center;
+/* ---------- Headings and text ---------- */
+
+h1, h2 { color: #fff; letter-spacing: -0.04em; }
+h1 { margin: 0; font: 700 clamp(2.2rem, 1.5rem + 3vw, 3.6rem)/1.05 var(--sans); }
+h2 { margin: 0 0 0.9rem; font: 700 1.6rem/1.1 var(--sans); }
+
+/* The key words of a heading, set apart like code. */
+h1 em,
+h2 em {
+  font: 500 1em var(--mono);
+  font-style: normal;
+  letter-spacing: -0.02em;
+  color: var(--act);
 }
 
-.answer {
-  margin: 0 auto;
-  max-width: 22em;
-  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
-  font-weight: 600;
-  line-height: 1.35;
-  text-align: center;
-}
-
-/* The visualizer slide: fixed rows at the top, the panels take the rest. */
-.visualizer {
+/* Slide 1: the top bar stays at the top, the rest is centered below it. */
+.top {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--line);
+  font: 500 0.85rem/1.3 var(--mono);
+  color: var(--muted);
 }
 
-h1 {
-  margin: 0 0 12px;
-  font-size: 1.4rem;
+.hero { margin: auto 0; }
+
+.tag {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.45em 0.7em;
+  border: 1.5px solid var(--act);
+  border-radius: 0.3em;
+  font: 600 0.75rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--act);
+}
+
+.intro {
+  max-width: 60ch;
+  margin: 0 0 1.5rem;
+  font-size: 1.25rem;
+  color: var(--ink-2);
+}
+
+/* Slide 4: the answer, as a callout box. */
+.answer {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1.2rem 1.6rem;
+  background: var(--bg2);
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--amber);
+  border-radius: 0.6rem;
+  font-size: clamp(1.4rem, 1rem + 1.5vw, 2rem);
   line-height: 1.35;
 }
 
-h2 {
-  margin: 0 0 8px;
-  font-size: 1.1rem;
+.answer p { margin: 0.4rem 0; }
+.answer strong { color: var(--amber); }
+.error { color: var(--bad); }
+
+/* ---------- Form controls ---------- */
+
+button {
+  padding: 0.5em 0.9em;
+  background: transparent;
+  border: 1.5px solid var(--line);
+  border-radius: 0.3em;
+  font: 600 0.8rem var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
 }
+
+button:hover { border-color: var(--act); }
+
+/* The buttons that start a run. Card buttons are built in renderCards.js,
+   so they are matched by where they sit instead of by a class. */
+button.primary, .card button { border-color: var(--act); color: var(--act); }
+
+input,
+select {
+  padding: 0.3em 0.5em;
+  background: var(--bg2);
+  border: 1.5px solid var(--line);
+  border-radius: 0.3em;
+  font: 0.9rem var(--mono);
+  color: var(--ink);
+}
+
+input:focus-visible, select:focus-visible, button:focus-visible {
+  outline: 2px solid var(--act);
+  outline-offset: 2px;
+}
+
+input[type="range"] {
+  padding: 0;
+  border: none;
+  background: none;
+  accent-color: var(--act);
+}
+
+pre {
+  margin: 0;
+  overflow-x: auto;
+  font: 0.9rem/1.5 var(--mono);
+}
+
+/* ---------- Panels ---------- */
+
+.panel {
+  padding: 12px 14px;
+  background: var(--bg2);
+  border: 1.5px solid var(--line);
+  border-radius: 0.8rem;
+}
+
+/* Panel and card titles are small labels, not headings to read. */
+.panel h2 {
+  margin: 0 0 10px;
+  font: 600 0.72rem var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Code cards (slides 2 and 5) ---------- */
+
+.card-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  margin: 1rem 0 0;
+}
+
+.card pre {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+
+.card label { font-family: var(--mono); color: var(--muted); }
+.card input { width: 7em; margin-right: 8px; }
+
+.card-output {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 12px;
+  margin: 10px 0 0;
+  font-family: var(--mono);
+}
+
+.card-output dt { color: var(--muted); }
+.card-output dd { margin: 0; color: #fff; }
+.card-output dd.crashed { color: var(--bad); font-weight: 600; }
+
+/* The fix stands apart from the two cards that have the problem. */
+#fix-card .card { background: transparent; border: 1.5px dashed var(--lime); }
+#fix-card .card h2 { color: var(--lime); }
+
+/* ---------- Visualizer (slide 3) ---------- */
+
+/* Fixed rows at the top, the panels take the rest of the height. */
+.visualizer { display: flex; flex-direction: column; }
 
 .controls,
 .player {
@@ -105,34 +240,32 @@ h2 {
   margin-bottom: 8px;
 }
 
+.controls label, .player label { font: 500 0.85rem var(--mono); color: var(--muted); }
+
 .controls p {
   flex-basis: 100%;
   margin: 0;
+  color: var(--ink-2);
 }
 
-#input {
-  width: 4em;
-}
-
-#scrubber {
-  flex: 1;
-  min-width: 200px;
-}
-
-.error {
-  color: var(--last);
-}
+#input { width: 5em; }
+#scrubber { flex: 1; min-width: 200px; }
 
 .stats {
   margin: 4px 0;
-  font-family: ui-monospace, monospace;
+  font: 0.9rem var(--mono);
+  color: var(--ink-2);
 }
 
 .comparison {
   margin: 4px 0 12px;
   padding: 8px 12px;
-  border-left: 4px solid var(--memo-border);
-  background: #f5f0ff;
+  background: var(--bg2);
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--lime);
+  border-radius: 0.4rem;
+  font: 0.9rem var(--mono);
+  color: var(--ink-2);
 }
 
 main {
@@ -161,63 +294,8 @@ main {
   min-height: 0;
 }
 
-.stack-panel,
-.source-panel {
-  overflow: auto;
-}
-
-.source-panel pre {
-  font-size: 0.8rem;
-}
-
-.panel {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 12px;
-}
-
-/* ---------- Code cards for the question ---------- */
-
-
-.card-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 16px;
-  margin: 8px 0 16px;
-}
-
-.card pre {
-  margin-bottom: 8px;
-  padding: 8px;
-  background: #f5f7fa;
-  border-radius: 4px;
-}
-
-.card input {
-  width: 7em;
-  margin-right: 8px;
-}
-
-.card-output {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 2px 12px;
-  margin: 8px 0 0;
-  font-family: ui-monospace, monospace;
-}
-
-.card-output dt {
-  color: var(--muted);
-}
-
-.card-output dd {
-  margin: 0;
-}
-
-.card-output dd.crashed {
-  color: var(--last);
-  font-weight: bold;
-}
+.stack-panel, .source-panel { overflow: auto; }
+.source-panel pre { font-size: 0.8rem; }
 
 /* ---------- Call tree (SVG) ---------- */
 
@@ -227,71 +305,42 @@ main {
   overflow: auto;
 }
 
-#tree {
-  display: block;
-  margin: 0 auto;
-}
+#tree { display: block; margin: 0 auto; }
+.edge { stroke: var(--line); stroke-width: 1.5; }
 
-.edge {
+/* The highlighted path from the root to the current call = the stack. */
+.edge.on-path { stroke: var(--act); stroke-width: 2.5; }
+
+.node rect {
+  fill: var(--bg);
   stroke: var(--line);
   stroke-width: 1.5;
 }
 
-/* The highlighted path from the root to the current call = the stack. */
-.edge.on-path {
-  stroke: var(--current);
-  stroke-width: 4;
-}
-
-.node rect {
-  fill: white;
-  stroke: var(--muted);
-  stroke-width: 1.5;
-}
-
 .node text {
-  font-family: ui-monospace, monospace;
+  font-family: var(--mono);
   font-size: 12px;
   text-anchor: middle;
   fill: var(--ink);
 }
 
-.node text.value {
-  font-weight: bold;
-}
-
-.node.active rect {
-  fill: var(--active);
-  stroke: var(--active-border);
-}
-
-.node.current rect {
-  fill: var(--current);
-  stroke: var(--ink);
-  stroke-width: 3;
-}
-
-.node.done rect {
-  fill: var(--done);
-  stroke: var(--done-border);
-}
-
-.node.memo rect {
-  fill: white;
-  stroke: var(--memo-border);
-  stroke-dasharray: 5 3;
-}
+.node text.value { font-weight: 600; fill: var(--lime); }
+.node.active rect { fill: rgb(62 230 255 / 0.08); stroke: var(--act); }
+.node.current rect { fill: var(--act); }
+.node.current text { fill: var(--bg); font-weight: 700; }
+.node.done rect { fill: var(--bg2); stroke: var(--line); }
+.node.done text { fill: var(--muted); }
+/* Repeated: the rule above is just as specific and would win by order. */
+.node.done text.value { fill: var(--lime); }
+.node.memo rect { stroke: var(--lime); stroke-dasharray: 5 3; }
 
 /* Drawn last so the node that just changed is always visible. */
-.node.last rect {
-  stroke: var(--last);
-  stroke-width: 3;
-}
+.node.last rect { stroke: var(--amber); stroke-width: 2.5; }
 
 .caption {
   margin: 8px 0 0;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font: 500 0.85rem var(--mono);
+  color: var(--ink-2);
 }
 
 .legend {
@@ -301,25 +350,25 @@ main {
   margin: 8px 0 0;
   padding: 0;
   list-style: none;
-  font-size: 0.85rem;
+  font: 0.8rem var(--mono);
   color: var(--muted);
 }
 
+/* Each swatch copies the fill and stroke of the node state it names. */
 .swatch {
   display: inline-block;
   width: 14px;
   height: 14px;
-  margin-right: 4px;
+  margin-right: 6px;
   vertical-align: middle;
-  border: 1.5px solid var(--muted);
   border-radius: 3px;
 }
 
-.swatch.current { background: var(--current); border: 3px solid var(--ink); }
-.swatch.active { background: var(--active); border-color: var(--active-border); }
-.swatch.done { background: var(--done); border-color: var(--done-border); }
-.swatch.memo { border: 1.5px dashed var(--memo-border); }
-.swatch.last { border: 3px solid var(--last); }
+.swatch.current { background: var(--act); border: 1.5px solid var(--act); }
+.swatch.active { background: rgb(62 230 255 / 0.08); border: 1.5px solid var(--act); }
+.swatch.done { background: var(--bg2); border: 1.5px solid var(--line); }
+.swatch.memo { background: var(--bg); border: 1.5px dashed var(--lime); }
+.swatch.last { background: var(--bg); border: 2.5px solid var(--amber); }
 
 /* ---------- Call stack (HTML list) ---------- */
 
@@ -327,68 +376,36 @@ main {
   margin: 0;
   padding: 0;
   list-style: none;
-  font-family: ui-monospace, monospace;
+  font: 0.9rem var(--mono);
 }
 
 .stack li {
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   padding: 6px 10px;
-  border: 1.5px solid var(--active-border);
-  border-radius: 4px;
-  background: var(--active);
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 0.4rem;
 }
 
 .stack li.top {
-  background: var(--current);
-  border: 3px solid var(--ink);
-  font-weight: bold;
+  border-color: var(--act);
+  color: #fff;
+  font-weight: 700;
 }
 
-.stack li.empty {
-  border-style: dashed;
-  border-color: var(--line);
-  background: none;
-  color: var(--muted);
-}
+.stack li.empty { border-style: dashed; color: var(--muted); }
 
-pre {
-  margin: 0;
-  overflow-x: auto;
-  font-size: 0.9rem;
-}
+/* ---------- Phones ---------- */
 
 /*
- * Phones: no snapping, and every slide just takes its natural height,
+ * No snapping, and every slide just takes its natural height,
  * because the visualizer can't fit one small screen.
  */
 @media (max-width: 800px) {
-  html {
-    scroll-snap-type: none;
-  }
-
-  .slide {
-    height: auto;
-    min-height: 0;
-    overflow: visible;
-  }
-
-  main,
-  .card-row {
-    grid-template-columns: 1fr;
-  }
-
-  main,
-  .side {
-    grid-template-rows: auto;
-  }
-
-  .tree-scroll {
-    flex: none;
-    height: 460px;
-  }
-
-  .stack-panel,
-  .source-panel {
-    overflow: visible;
-  }
+  html { scroll-snap-type: none; }
+  .slide { height: auto; min-height: 0; overflow: visible; }
+  main, .card-row { grid-template-columns: 1fr; }
+  main, .side { grid-template-rows: auto; }
+  .tree-scroll { flex: none; height: 460px; }
+  .stack-panel, .source-panel { overflow: visible; }
 }

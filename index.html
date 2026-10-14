@@ -4,23 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Recursion: call tree and call stack</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- 1. The question -->
   <section class="slide slide-centered">
-    <h1 class="title">
-      One recursive function makes 2.7 million calls and finishes in
-      milliseconds. Another needs only 100,000 calls and crashes. Why does
-      the smaller one crash?
-    </h1>
+    <header class="top">
+      <span>Programming Interactivity · final project</span>
+      <span>Daryna Karpenko · Demo day · 16 October</span>
+    </header>
+    <div class="hero">
+      <span class="tag">Final project · recursion</span>
+      <p class="intro">
+        One recursive function makes 2.7 million calls and finishes in
+        milliseconds. Another needs only 100,000 calls and crashes.
+      </p>
+      <h1>Why does the <em>smaller one</em> crash?</h1>
+    </div>
     <span class="slide-number">1 / 5</span>
   </section>
 
   <!-- 2. The two functions from the question -->
   <section class="slide slide-centered">
     <div class="question">
-      <button id="run-all">Run all</button>
+      <h2>Two functions, <em>guess first</em></h2>
+      <button id="run-all" class="primary">Run all</button>
       <div id="question-cards" class="card-row"></div>
     </div>
     <span class="slide-number">2 / 5</span>
@@ -28,6 +37,7 @@
 
   <!-- 3. The visualizer -->
   <section class="slide visualizer">
+    <h2>Tree and stack, <em>step by step</em></h2>
     <section class="controls">
       <label>Example
         <select id="example"></select>
@@ -35,7 +45,7 @@
       <label>n
         <input id="input" type="number" min="0">
       </label>
-      <button id="run">Run</button>
+      <button id="run" class="primary">Run</button>
       <p id="description"></p>
       <p id="error" class="error"></p>
     </section>
@@ -87,16 +97,19 @@
 
   <!-- 4. The answer -->
   <section class="slide slide-centered">
-    <p class="answer">
-      The stack holds only the path from the root to the current call.
-      Width costs time, depth costs stack.
-    </p>
+    <div class="answer">
+      <p>The stack holds only the path from the root to the current call.</p>
+      <p><strong>Width costs time, depth costs stack.</strong></p>
+    </div>
     <span class="slide-number">4 / 5</span>
   </section>
 
   <!-- 5. The fix -->
   <section class="slide slide-centered">
-    <div id="fix-card" class="fix"></div>
+    <div class="fix">
+      <h2>The fix: <em>explicit stack</em></h2>
+      <div id="fix-card"></div>
+    </div>
     <span class="slide-number">5 / 5</span>
   </section>
 
