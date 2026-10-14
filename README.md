@@ -23,8 +23,9 @@ Width costs time, depth costs stack. Each has its own fix:
   which can hold millions of entries, instead of on the call stack.
 
 The demo shows one execution as a tree and a stack side by side, highlighting the
-root-to-current path so you can watch it match the stack step by step. The
-"Width vs depth" panel runs the three cases from the question in your browser.
+root-to-current path so you can watch it match the stack step by step. Above it,
+code cards for fib, sum and the explicit-stack fix let you run the question's
+cases in your own browser and compare calls, max depth and the result or error.
 
 ## Running locally
 
@@ -47,8 +48,10 @@ does not work on Node 22, because Node treats the folder as a file to run.)
 
 ## Controls
 
-- **Width vs depth → Run the experiment** fills the table. It only runs on click,
-  because it deliberately overflows the stack and takes a moment.
+- **Code cards:** set `n` and press **Run** on a card (or Enter), or **Run all**.
+  Nothing runs on page load, because fib(30) takes a moment and sum is meant to
+  crash. The counter adds one extra JS frame per call, so a counted sum crashes
+  at roughly half the depth an uncounted one would.
 - Choose an example and `n`, then press **Run** (or Enter).
 - **Back / Forward** step one event; **Play** steps automatically at the chosen speed.
 - The long slider jumps to any step. **Reset** goes back to step 0.
@@ -81,7 +84,7 @@ saved. The tree ignores these events; the stack panel shows the stage and locals
 examples ─┬─ recursive functions ─┐
           └─ explicit.js ─────────┴→ tracer → events → replay → layout → render
 
-depth.js → width-vs-depth panel   (no tracer: millions of calls)
+depth.js (counter) → renderCards   (no tracer: millions of calls)
 ```
 
 ## Modules
@@ -96,9 +99,12 @@ depth.js → width-vs-depth panel   (no tracer: millions of calls)
   return value. With a tracer, they record the same calls and returns as the
   recursive versions, plus `resume` events. Without one, they handle n = 100000
   easily.
-- **`src/depth.js`**: plain functions for the panel: `countFibCalls(n)` (calls and
-  max depth), `recursiveSum(n)` (the function that crashes) and
-  `probeStackLimit()` (roughly how many nested calls this engine allows).
+- **`src/depth.js`**: `createCounter()` returns `{ wrap(fn), stats() }`, which
+  counts calls, depth and max depth using the same `let f = ...; f = counter.wrap(f)`
+  pattern as the tracer. Also defines the three cards (`depthCards`): the source
+  each one shows and how to measure it. The explicit card counts inside
+  `sumExplicit` through its optional `stats` object.
+- **`src/renderCards.js`**: builds the code cards and shows each outcome.
 - **`src/replay.js`**: `stateAt(events, k)` replays the first `k` events and returns
   the tree nodes (with stage and locals for explicit frames), the stack, the current
   call and the last node touched.
@@ -111,6 +117,6 @@ depth.js → width-vs-depth panel   (no tracer: millions of calls)
 - **`src/examples.js`**: sum, naive fib, memoized fib, permutations, and the
   explicit-stack sum and fib.
 - **`src/main.js`**: connects the controls, the player, the stats, the
-  naive-vs-memoized comparison and the width-vs-depth panel.
+  naive-vs-memoized comparison and the code cards.
 - **`tests/`**: tests for the tracer, replay, layout, the explicit-stack versions
-  (their event logs must match the recursive ones exactly) and depth.js.
+  (their event logs must match the recursive ones exactly) and the counter.
