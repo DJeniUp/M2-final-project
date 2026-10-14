@@ -14,9 +14,75 @@
 body {
   margin: 0 auto;
   max-width: 1200px;
-  padding: 16px;
+  padding: 0 16px;
   font-family: system-ui, sans-serif;
   color: var(--ink);
+}
+
+/* ---------- Slides ---------- */
+
+/*
+ * scroll-snap-type on the scrolling element (the page) makes scrolling
+ * stop only at snap points; `mandatory` means it always settles on one,
+ * so wheel, PageUp/PageDown and clickers move exactly one slide.
+ * scroll-snap-align: start makes each slide's top edge a snap point.
+ */
+html {
+  scroll-snap-type: y mandatory;
+}
+
+/*
+ * 100dvh, not 100vh: on mobile browsers 100vh is the height with the
+ * address bar hidden, so a 100vh slide is taller than the visible area
+ * while the bar is shown. dvh ("dynamic") follows the actual visible
+ * height. The 100vh line is a fallback for browsers without dvh.
+ */
+.slide {
+  position: relative;
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
+  padding: 24px 0 36px;
+  scroll-snap-align: start;
+  /* Safety net on short screens: scroll inside the slide, never cut off. */
+  overflow-y: auto;
+}
+
+.slide-centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide-number {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.title {
+  margin: 0 auto;
+  max-width: 20em;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.3;
+  text-align: center;
+}
+
+.answer {
+  margin: 0 auto;
+  max-width: 22em;
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* The visualizer slide: fixed rows at the top, the panels take the rest. */
+.visualizer {
+  display: flex;
+  flex-direction: column;
 }
 
 h1 {
@@ -70,11 +136,38 @@ h2 {
 }
 
 main {
+  /* Takes all the height the rows above leave over. min-height: 0 lets
+     it shrink below its content, so the panels scroll instead. */
+  flex: 1;
+  min-height: 0;
   display: grid;
   /* minmax(0, ...) lets a wide tree scroll instead of stretching the column. */
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  grid-template-rows: minmax(0, 1fr);
   gap: 16px;
-  margin-bottom: 16px;
+}
+
+.tree-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Stack on top, source below, each scrolling on its own. */
+.side {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  min-height: 0;
+}
+
+.stack-panel,
+.source-panel {
+  overflow: auto;
+}
+
+.source-panel pre {
+  font-size: 0.8rem;
 }
 
 .panel {
@@ -85,9 +178,6 @@ main {
 
 /* ---------- Code cards for the question ---------- */
 
-.question {
-  margin-bottom: 24px;
-}
 
 .card-row {
   display: grid;
@@ -132,7 +222,8 @@ main {
 /* ---------- Call tree (SVG) ---------- */
 
 .tree-scroll {
-  height: 460px;
+  flex: 1;
+  min-height: 0;
   overflow: auto;
 }
 
@@ -266,9 +357,38 @@ pre {
   font-size: 0.9rem;
 }
 
+/*
+ * Phones: no snapping, and every slide just takes its natural height,
+ * because the visualizer can't fit one small screen.
+ */
 @media (max-width: 800px) {
+  html {
+    scroll-snap-type: none;
+  }
+
+  .slide {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
   main,
   .card-row {
     grid-template-columns: 1fr;
+  }
+
+  main,
+  .side {
+    grid-template-rows: auto;
+  }
+
+  .tree-scroll {
+    flex: none;
+    height: 460px;
+  }
+
+  .stack-panel,
+  .source-panel {
+    overflow: visible;
   }
 }

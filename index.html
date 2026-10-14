@@ -7,71 +7,97 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>
+  <!-- 1. The question -->
+  <section class="slide slide-centered">
+    <h1 class="title">
       One recursive function makes 2.7 million calls and finishes in
       milliseconds. Another needs only 100,000 calls and crashes. Why does
       the smaller one crash?
     </h1>
-  </header>
-
-  <section class="question">
-    <button id="run-all">Run all</button>
-    <div id="question-cards" class="card-row"></div>
-    <div id="fix-card"></div>
+    <span class="slide-number">1 / 5</span>
   </section>
 
-  <section class="controls">
-    <label>Example
-      <select id="example"></select>
-    </label>
-    <label>n
-      <input id="input" type="number" min="0">
-    </label>
-    <button id="run">Run</button>
-    <p id="description"></p>
-    <p id="error" class="error"></p>
+  <!-- 2. The two functions from the question -->
+  <section class="slide slide-centered">
+    <div class="question">
+      <button id="run-all">Run all</button>
+      <div id="question-cards" class="card-row"></div>
+    </div>
+    <span class="slide-number">2 / 5</span>
   </section>
 
-  <section class="player">
-    <button id="reset" title="Reset">⏮ Reset</button>
-    <button id="back" title="Step back (←)">◀ Back</button>
-    <button id="play" title="Play / pause (space)">▶ Play</button>
-    <button id="forward" title="Step forward (→)">Forward ▶</button>
-    <label>Speed
-      <input id="speed" type="range" min="1" max="20" value="4">
-    </label>
-    <input id="scrubber" type="range" min="0" value="0" aria-label="Step">
-  </section>
+  <!-- 3. The visualizer -->
+  <section class="slide visualizer">
+    <section class="controls">
+      <label>Example
+        <select id="example"></select>
+      </label>
+      <label>n
+        <input id="input" type="number" min="0">
+      </label>
+      <button id="run">Run</button>
+      <p id="description"></p>
+      <p id="error" class="error"></p>
+    </section>
 
-  <p id="stats" class="stats"></p>
-  <p id="comparison" class="comparison" hidden></p>
+    <section class="player">
+      <button id="reset" title="Reset">⏮ Reset</button>
+      <button id="back" title="Step back (←)">◀ Back</button>
+      <button id="play" title="Play / pause (space)">▶ Play</button>
+      <button id="forward" title="Step forward (→)">Forward ▶</button>
+      <label>Speed
+        <input id="speed" type="range" min="1" max="20" value="4">
+      </label>
+      <input id="scrubber" type="range" min="0" value="0" aria-label="Step">
+    </section>
 
-  <main>
-    <section class="panel tree-panel">
-      <h2>Call tree</h2>
-      <div class="tree-scroll">
-        <svg id="tree"></svg>
+    <p id="stats" class="stats"></p>
+    <p id="comparison" class="comparison" hidden></p>
+
+    <main>
+      <section class="panel tree-panel">
+        <h2>Call tree</h2>
+        <div class="tree-scroll">
+          <svg id="tree"></svg>
+        </div>
+        <p class="caption">The highlighted path in the tree is exactly the stack on the right.</p>
+        <ul class="legend">
+          <li><span class="swatch current"></span>current (top of stack)</li>
+          <li><span class="swatch active"></span>on the stack</li>
+          <li><span class="swatch done"></span>returned</li>
+          <li><span class="swatch memo"></span>answered from cache</li>
+          <li><span class="swatch last"></span>changed in the last step</li>
+        </ul>
+      </section>
+
+      <div class="side">
+        <section class="panel stack-panel">
+          <h2>Call stack <small>(top first)</small></h2>
+          <ol id="stack" class="stack"></ol>
+        </section>
+
+        <section class="panel source-panel">
+          <h2>Source</h2>
+          <pre id="source"></pre>
+        </section>
       </div>
-      <p class="caption">The highlighted path in the tree is exactly the stack on the right.</p>
-      <ul class="legend">
-        <li><span class="swatch current"></span>current (top of stack)</li>
-        <li><span class="swatch active"></span>on the stack</li>
-        <li><span class="swatch done"></span>returned</li>
-        <li><span class="swatch memo"></span>answered from cache</li>
-        <li><span class="swatch last"></span>changed in the last step</li>
-      </ul>
-    </section>
+    </main>
+    <span class="slide-number">3 / 5</span>
+  </section>
 
-    <section class="panel stack-panel">
-      <h2>Call stack <small>(top first)</small></h2>
-      <ol id="stack" class="stack"></ol>
-    </section>
-  </main>
+  <!-- 4. The answer -->
+  <section class="slide slide-centered">
+    <p class="answer">
+      The stack holds only the path from the root to the current call.
+      Width costs time, depth costs stack.
+    </p>
+    <span class="slide-number">4 / 5</span>
+  </section>
 
-  <section class="panel">
-    <h2>Source</h2>
-    <pre id="source"></pre>
+  <!-- 5. The fix -->
+  <section class="slide slide-centered">
+    <div id="fix-card" class="fix"></div>
+    <span class="slide-number">5 / 5</span>
   </section>
 
   <script type="module" src="src/main.js"></script>

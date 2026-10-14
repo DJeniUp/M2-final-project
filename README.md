@@ -48,6 +48,9 @@ does not work on Node 22, because Node treats the folder as a file to run.)
 
 ## Controls
 
+- **Slides:** the page is five full-screen slides (CSS scroll snapping, no JS).
+  PageUp/PageDown, a presentation clicker or the mouse wheel moves between them.
+  Below 800px wide, snapping is off and the page scrolls normally.
 - **Code cards:** set `n` and press **Run** on a card (or Enter), or **Run all**.
   Nothing runs on page load, because fib(30) takes a moment and sum is meant to
   crash. The stack limit is a fixed amount of memory, not a number of frames;
